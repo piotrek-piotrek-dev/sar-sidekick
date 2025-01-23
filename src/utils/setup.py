@@ -16,6 +16,9 @@ PACKAGES_TO_INSTALL = [
     "matplotlib>=3.4",
 ]
 
+NOTEBOOK_WEB_LOCATION = r"https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py"
+
+
 def is_package_installed(packageName: str) -> bool:
     if packageName in sys.modules:
         print(f"package {packageName} already installed\n")
@@ -29,11 +32,11 @@ def install_notebook() -> bool:
         #Fetch `notebook_utils` module
         import requests
         r = requests.get(
-            url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
+            url=NOTEBOOK_WEB_LOCATION,
         )
         if r.status_code is not 200: return False
 
-        open("notebook_utils.py", "w").write(r.text)
+        with open("notebook_utils.py", "w") as f: f.write(r.text)
         r.close()
         return True
 

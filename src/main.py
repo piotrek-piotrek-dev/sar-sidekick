@@ -8,6 +8,11 @@ import sys
 
 if __name__ == '__main__':
     print(r"Starting main script")
+    """
+    USE THIS ONLY ONCE AT STARTUP
     from utils import setup
     if not setup.install_dependencies():
         sys.exit(1)
+    if not setup.import_modules():
+        sys.exit(1)
+    """

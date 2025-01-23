@@ -5,6 +5,7 @@ credits and sources from: https://docs.openvino.ai/2024/notebooks/person-trackin
 
 import subprocess
 import sys
+from pathlib import Path
 
 PACKAGES_TO_INSTALL = [
     "openvino>=2024.0.0",
@@ -23,10 +24,24 @@ def is_package_installed(packageName: str) -> bool:
         print(f"package {packageName} not installed, attempting to install\n")
         return False
 
+def install_notebook() -> bool:
+    if not Path("./notebook_utils.py").exists():
+        #Fetch `notebook_utils` module
+        import requests
+        r = requests.get(
+            url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
+        )
+        if r.status_code is not 200: return False
+
+        open("notebook_utils.py", "w").write(r.text)
+        r.close()
+        return True
+
 def install_dependencies() -> bool:
     for package in PACKAGES_TO_INSTALL:
         if not is_package_installed(package):
             if not install_package(package): return False
+    if not install_notebook(): return False
     return True
 
 def install_package(packageName: str) -> bool:

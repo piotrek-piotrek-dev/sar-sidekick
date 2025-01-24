@@ -13,16 +13,14 @@ PACKAGES_TO_INSTALL = [
     "openvino>=2024.0.0",
     "opencv-python",
     "requests",
-    "scipy",
-    "tqdm",
-    "matplotlib>=3.4",
+    'ultralytics',
 ]
 
-NOTEBOOK_WEB_LOCATION = r"https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py"
+RAW_FILES_WEB_LOCATIONS = r"https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py"
 
 MODULES_TO_IMPORT = [
     'collections',
-    'time',
+    'datetime',
     'cv2',
     'IPython',
     'pathlib',
@@ -33,9 +31,7 @@ MODULES_TO_IMPORT = [
 
 NAMESPACES = [
     ('np' , 'numpy'),
-    ('plt', 'matplotlib.pyplot'),
     ('ov', 'openvino'),
-    ('utils', 'utils.notebook_utils'),
     ]
 
 
@@ -77,7 +73,7 @@ def import_modules() -> bool:
     for module_name in MODULES_TO_IMPORT:
         try:
             lib = import_module(module_name)
-        except:
+        except ModuleNotFoundError:
             print(f"Failed to import {module_name}. see details:\n{sys.exc_info()}")
             return False
         else:
@@ -120,7 +116,7 @@ def install_notebook() -> bool:
         #Fetch `notebook_utils` module
         import requests
         r = requests.get(
-            url=NOTEBOOK_WEB_LOCATION,
+            url=RAW_FILES_WEB_LOCATIONS,
         )
         if r.status_code != 200: return False
 
@@ -132,7 +128,6 @@ def install_dependencies() -> bool:
     for package in PACKAGES_TO_INSTALL:
         if not is_package_installed(package):
             if not install_package(package): return False
-    if not install_notebook(): return False
     return True
 
 def install_package(packageName: str) -> bool:

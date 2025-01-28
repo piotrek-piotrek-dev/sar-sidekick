@@ -1,6 +1,6 @@
 from pathlib import Path
 
-CONFIDENCE_THRESHOLD = 0.8
+CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 

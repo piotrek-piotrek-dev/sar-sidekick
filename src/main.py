@@ -1,6 +1,8 @@
 
 
 import datetime
+from pprint import pprint
+
 from PIL import Image
 from ultralytics import YOLO
 import cv2
@@ -27,10 +29,11 @@ def create_video_writer(video_cap, output_filename):
 def detect(mmodel, frame):
     # run the YOLO model on the frame
     detections = mmodel(frame)[0]
+    img = Image.fromarray(detections.plot()[:, :, ::-1])
+    img.show()
     results = []
     # loop over the detections
     for data in detections.boxes.data.tolist():
-        # extract the confidence (i.e., probability) associated with the prediction
         confidence = data[4]
 
         # filter out weak detections by ensuring the
@@ -68,8 +71,11 @@ if __name__ == '__main__':
         pprint(results)
     """
 
-    res = model(INPUT_FRAME_FILE_PATH)
-    img = Image.fromarray(res[0].plot()[:, :, ::-1])
-    img.show()
+    # detections = model(INPUT_FRAME_FILE_PATH)
+    detections = detect(model, INPUT_FRAME_FILE_PATH)
+
+    bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
+
+    pprint(bounding_boxes)
 
 

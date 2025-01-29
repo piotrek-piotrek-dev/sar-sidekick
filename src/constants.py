@@ -3,6 +3,7 @@ from pathlib import Path
 CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
+PERSON_CLASS_ID = 0
 
 MODELS_ROOT_DIR = Path(__file__).parent.parent.absolute().joinpath('resources').joinpath('models')
 RESOURCES_ROOT_DIR = Path(__file__).parent.parent.absolute().joinpath('resources')

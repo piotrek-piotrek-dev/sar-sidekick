@@ -1,19 +1,16 @@
+from pathlib import Path
 
-
-import datetime
-from pprint import pprint
+import cv2
 
 from PIL import Image
 from ultralytics import YOLO
-import cv2
+from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
-
 from src.constants import INPUT_VIDEO_FILE_NAME, OUTPUT_FILE_NAME, MODEL_NAME, DEEP_SORT_MAX_AGE, INPUT_VIDEO_FILE, \
-    YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH
+    YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
 def create_video_writer(video_cap, output_filename):
-
     # grab the width, height, and fps of the frames in the video stream.
     frame_width = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -26,7 +23,17 @@ def create_video_writer(video_cap, output_filename):
 
     return writer
 
-def detect(mmodel, frame):
+
+def detect(mmodel, frame: Path) -> list:
+    """
+
+    :param mmodel: YOLO model to run inference. YOLO constructor
+    :param frame: path to frame on which we need to run detection
+    :return: list of tuples containing:
+    - bounding box in format of a list: [x, y, w, h] of each bbox
+    - confidence (in %) of detection in a given bbox
+    - detected class id
+    """
     # run the YOLO model on the frame
     detections = mmodel(frame)[0]
     img = Image.fromarray(detections.plot()[:, :, ::-1])
@@ -51,7 +58,6 @@ def detect(mmodel, frame):
 
 
 if __name__ == '__main__':
-
     # load the pre-trained YOLOv8n model
     model = YOLO(YOLO8_MODEL_PATH)
     tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
@@ -74,8 +80,10 @@ if __name__ == '__main__':
     # detections = model(INPUT_FRAME_FILE_PATH)
     detections = detect(model, INPUT_FRAME_FILE_PATH)
 
-    bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
+    #bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
+    person_bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3])
+                             for det in detections
+                             if det[2] == PERSON_CLASS_ID]
 
-    pprint(bounding_boxes)
-
+    pprint(person_bounding_boxes)
 

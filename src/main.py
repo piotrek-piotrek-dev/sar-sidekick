@@ -1,3 +1,4 @@
+from asyncio.subprocess import Process
 from pathlib import Path
 
 import PIL
@@ -10,8 +11,9 @@ from ultralytics import YOLO
 from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
-from src.color_detection_5 import draw_bbox_on_image_2
+from src.color_detection_5 import draw_bbox_on_image_2, color_detection
 from src.helpers.Detection import Detection
+from src.helpers.ProcessedFrame import ProcessedFrame
 from src.helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
@@ -97,11 +99,22 @@ if __name__ == '__main__':
     pprint(person_bounding_boxes)
 
     image = original_image.copy()
+    # processed_frame: ProcessedFrame = ProcessedFrame(image, INPUT_FRAME_FILE_PATH)
     for bbox in person_bounding_boxes:
         image = draw_bbox_on_image_2(image, bbox)
         # uncomment below 2 lines if you want to see all the intermediate bboxes on the image
         # intermediate_img = Image.fromarray(image)
         # intermediate_img.show()
 
-    processed_image = Image.fromarray(image)
-    processed_image.show()
+    # yet another intermediate checkpoint for visualization
+    # processed_image = Image.fromarray(image)
+    # processed_image.show()
+
+    processed_frame = \
+        {
+            'name': INPUT_FRAME_FILE_PATH,
+            'bboxes': [bbox.get_bouding_box() for bbox in person_bounding_boxes],
+            'image': original_image,
+        }
+
+    color_detection([processed_frame])

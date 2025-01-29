@@ -1,13 +1,18 @@
 from pathlib import Path
 
+import PIL
 import cv2
+import numpy as np
 
 from PIL import Image
+from fontTools.ttx import process
 from ultralytics import YOLO
 from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
-from src.constants import INPUT_VIDEO_FILE_NAME, OUTPUT_FILE_NAME, MODEL_NAME, DEEP_SORT_MAX_AGE, INPUT_VIDEO_FILE, \
-    YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
+
+from src.color_detection_5 import draw_bbox_on_image_2
+from src.helpers.Detection import Detection
+from src.helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
 def create_video_writer(video_cap, output_filename):
@@ -24,11 +29,11 @@ def create_video_writer(video_cap, output_filename):
     return writer
 
 
-def detect(mmodel, frame: Path) -> list:
+def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_intermediate_frame=False) -> list:
     """
-
     :param mmodel: YOLO model to run inference. YOLO constructor
     :param frame: path to frame on which we need to run detection
+    :param show_intermediate_frame: flag to steer if you want to see all detections as bboxes
     :return: list of tuples containing:
     - bounding box in format of a list: [x, y, w, h] of each bbox
     - confidence (in %) of detection in a given bbox
@@ -36,8 +41,9 @@ def detect(mmodel, frame: Path) -> list:
     """
     # run the YOLO model on the frame
     detections = mmodel(frame)[0]
-    img = Image.fromarray(detections.plot()[:, :, ::-1])
-    img.show()
+    if show_intermediate_frame:
+        img = Image.fromarray(detections.plot()[:, :, ::-1])
+        img.show()
     results = []
     # loop over the detections
     for data in detections.boxes.data.tolist():
@@ -60,7 +66,7 @@ def detect(mmodel, frame: Path) -> list:
 if __name__ == '__main__':
     # load the pre-trained YOLOv8n model
     model = YOLO(YOLO8_MODEL_PATH)
-    tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
+    #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
 
     """"# initialize the video capture object
     video_cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
@@ -77,13 +83,25 @@ if __name__ == '__main__':
         pprint(results)
     """
 
-    # detections = model(INPUT_FRAME_FILE_PATH)
+    original_image = cv2.imread(INPUT_FRAME_FILE_PATH)
     detections = detect(model, INPUT_FRAME_FILE_PATH)
 
     #bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
-    person_bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3])
+    person_bounding_boxes: list[Detection]
+    person_bounding_boxes = [Detection(INPUT_FRAME_FILE_PATH,
+                                       x=det[0][0], y=det[0][1], width=det[0][2], height=det[0][3],
+                                       confidence=det[1])
                              for det in detections
                              if det[2] == PERSON_CLASS_ID]
 
     pprint(person_bounding_boxes)
 
+    image = original_image.copy()
+    for bbox in person_bounding_boxes:
+        image = draw_bbox_on_image_2(image, bbox)
+        # uncomment below 2 lines if you want to see all the intermediate bboxes on the image
+        # intermediate_img = Image.fromarray(image)
+        # intermediate_img.show()
+
+    processed_image = Image.fromarray(image)
+    processed_image.show()

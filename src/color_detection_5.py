@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from ultralytics import YOLO
 import cv2
 import numpy as np
@@ -8,6 +10,7 @@ import threading
 import queue
 import matplotlib.pyplot as plt
 
+from src.helpers.Detection import Detection
 
 # Dopacowanie do kolorow przedziałów, w HSV (wg neta OpenCV lepiej na tym dziala niz na klasycznym RGB)
 COLOR_RANGES = {
@@ -98,7 +101,38 @@ def draw_bboxes_on_image(image, matching_bboxes):
 
         color_info = bbox_data["colors"]
         text = ', '.join([f"{color}: {info['percentage']:.1f}%" for color, info in color_info.items() if info["found"]])
-        cv2.putText(image, text, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(image,
+                    text,
+                    (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 255, 0),
+                    2,
+                    cv2.LINE_AA)
+
+    return image
+
+def draw_bbox_on_image_2(image: np.ndarray, matching_bbox: Detection) -> np.ndarray:
+    x1 = matching_bbox.x
+    y1 = matching_bbox.y
+    width = matching_bbox.width
+    height = matching_bbox.height
+    x2 = x1 + width
+    y2 = y1 + height
+
+    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+
+    #color_info = bbox_data["colors"]
+    #text = ', '.join([f"{color}: {info['percentage']:.1f}%" for color, info in color_info.items() if info["found"]])
+    text = f'confidence: {matching_bbox.confidence:.2f}%'
+    cv2.putText(image,
+                text,
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 255, 0),
+                2,
+                cv2.LINE_AA)
 
     return image
 

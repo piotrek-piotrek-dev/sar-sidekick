@@ -1,16 +1,19 @@
 from pathlib import Path
 
+PROJECT_NAME = 'sar-sidekick'
+
 CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 PERSON_CLASS_ID = 0
 
-MODELS_ROOT_DIR = Path(__file__).parent.parent.absolute().joinpath('resources').joinpath('models')
-RESOURCES_ROOT_DIR = Path(__file__).parent.parent.absolute().joinpath('resources')
+PROJECT_ROOT_DIR = [p for p in Path(__file__).parents if p.parts[-1]==PROJECT_NAME][0]
+RESOURCES_ROOT_DIR = PROJECT_ROOT_DIR.joinpath('resources')
+MODELS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('models')
 
 YOLO8_MODEL_NAME = 'yolov8n.pt'
 YOLO8_MODEL_DIR = MODELS_ROOT_DIR.joinpath(YOLO8_MODEL_NAME.split('.')[0])
-YOLO8_MODEL_PATH = YOLO8_MODEL_DIR.joinpath(YOLO8_MODEL_NAME).joinpath(YOLO8_MODEL_NAME)
+YOLO8_MODEL_PATH = YOLO8_MODEL_DIR.joinpath(YOLO8_MODEL_NAME)
 
 INPUT_VIDEO_FILE_NAME = '2.mp4'
 INPUT_VIDEO_FILE = Path(RESOURCES_ROOT_DIR.joinpath('video').joinpath(INPUT_VIDEO_FILE_NAME))
@@ -19,5 +22,4 @@ OUTPUT_FILE_NAME = 'output.mp4'
 INPUT_FRAME_FILE_NAME = '3.jpg'
 INPUT_FRAME_FILE_PATH = Path(RESOURCES_ROOT_DIR.joinpath('img').joinpath(INPUT_FRAME_FILE_NAME))
 
-MODEL_NAME = 'yolov8n.pt'
 DEEP_SORT_MAX_AGE = 50

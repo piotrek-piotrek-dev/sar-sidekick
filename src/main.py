@@ -107,8 +107,8 @@ if __name__ == '__main__':
         # intermediate_img.show()
 
     # yet another intermediate checkpoint for visualization
-    # processed_image = Image.fromarray(image)
-    # processed_image.show()
+    processed_image = Image.fromarray(image)
+    processed_image.show()
 
     processed_frame = \
         {

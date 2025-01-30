@@ -12,6 +12,7 @@ from deep_sort_realtime.deepsort_tracker import DeepSort
 from color_detection_5 import draw_bbox_on_image_2, color_detection
 from helpers.Detection import Detection
 from helpers.LoggerConfig import get_logger
+from helpers.TimeMeasurements import measure_exec_time, MeasureExecTime
 from helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
@@ -30,7 +31,7 @@ def create_video_writer(video_cap, output_filename):
 
     return writer
 
-
+#@measure_exec_time
 def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_intermediate_frame=False) -> list:
     """
     :param mmodel: YOLO model to run inference. YOLO constructor
@@ -44,7 +45,7 @@ def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_interm
     log.info("entering detection module")
     # run the YOLO model on the frame
     detections = mmodel(frame)[0]
-    log.info("finished detections, found %s objects in %s", len(detections.boxes.data.tolist))
+    log.info("finished detections, found %s objects, YOLO inference: %s", detections.boxes.data.shape[0], detections.speed['inference'])
     if show_intermediate_frame:
         img = Image.fromarray(detections.plot()[:, :, ::-1])
         img.show()
@@ -70,10 +71,13 @@ def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_interm
 if __name__ == '__main__':
     log.info("entering main method")
     log.info("loading model")
-    # load the pre-trained YOLOv8n model
+
+    #with MeasureExecTime() as yoloLoadingTime:
+        # load the pre-trained YOLOv8n model
     model = YOLO(YOLO8_MODEL_PATH)
     #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
-    log.info("loaded model")
+    #log.info("loaded model in %s seconds", yoloLoadingTime.exec_time)
+
     """"# initialize the video capture object
     video_cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
     # initialize the video writer object
@@ -91,6 +95,7 @@ if __name__ == '__main__':
 
     original_image = cv2.imread(INPUT_FRAME_FILE_PATH)
     detections = detect(model, INPUT_FRAME_FILE_PATH)
+    log.info("found %s objects in %s", len(detections.boxes.data.tolist), detections_exec_time)
 
     #bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
     person_bounding_boxes: list[Detection]

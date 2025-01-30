@@ -11,10 +11,10 @@ from ultralytics import YOLO
 from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
-from src.color_detection_5 import draw_bbox_on_image_2, color_detection
-from src.helpers.Detection import Detection
-from src.helpers.ProcessedFrame import ProcessedFrame
-from src.helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
+from color_detection_5 import draw_bbox_on_image_2, color_detection
+from helpers.Detection import Detection
+from helpers.ProcessedFrame import ProcessedFrame
+from helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
 def create_video_writer(video_cap, output_filename):

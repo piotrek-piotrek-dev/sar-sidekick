@@ -11,9 +11,9 @@ import threading
 import queue
 import matplotlib.pyplot as plt
 
-from src.helpers.Detection import Detection
-from src.helpers.ProcessedFrame import ProcessedFrame
-from src.helpers.constants import YOLO11_MODEL_PATH
+from helpers.Detection import Detection
+from helpers.ProcessedFrame import ProcessedFrame
+from helpers.constants import YOLO11_MODEL_PATH
 
 # Dopacowanie do kolorow przedziałów, w HSV (wg neta OpenCV lepiej na tym dziala niz na klasycznym RGB)
 COLOR_RANGES = {

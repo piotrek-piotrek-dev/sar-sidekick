@@ -1,7 +1,7 @@
 import numpy as np
 from torch.nn.functional import selu_
 
-from src.helpers.Detection import Detection
+from helpers.Detection import Detection
 
 
 class ProcessedFrame:

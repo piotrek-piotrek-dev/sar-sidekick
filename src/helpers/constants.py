@@ -1,15 +1,26 @@
+from datetime import datetime
 from pathlib import Path
 
 PROJECT_NAME = 'sar-sidekick'
+PROJECT_ROOT_DIR = [p for p in Path(__file__).parents if p.parts[-1]==PROJECT_NAME][0]
+RESOURCES_ROOT_DIR = PROJECT_ROOT_DIR.joinpath('resources')
+MODELS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('models')
+LOGS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('logs')
+
+def get_date_time_as_str() -> str:
+    time = (str(datetime.now())
+            .replace(' ', '_')
+            .replace(':', '-')
+            .replace('.', '-'))
+    return time
+
+LOG_TO_STD_OUT = True
+LOG_FILE_PATH = LOGS_ROOT_DIR.joinpath(f'log_{get_date_time_as_str()}.log')
 
 CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 PERSON_CLASS_ID = 0
-
-PROJECT_ROOT_DIR = [p for p in Path(__file__).parents if p.parts[-1]==PROJECT_NAME][0]
-RESOURCES_ROOT_DIR = PROJECT_ROOT_DIR.joinpath('resources')
-MODELS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('models')
 
 YOLO8_MODEL_NAME = 'yolov8n.pt'
 YOLO8_MODEL_DIR = MODELS_ROOT_DIR.joinpath(YOLO8_MODEL_NAME.split('.')[0])

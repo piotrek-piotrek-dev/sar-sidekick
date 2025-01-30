@@ -1,4 +1,3 @@
-from asyncio.subprocess import Process
 from pathlib import Path
 
 import PIL
@@ -6,16 +5,17 @@ import cv2
 import numpy as np
 
 from PIL import Image
-from fontTools.ttx import process
 from ultralytics import YOLO
 from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
 from color_detection_5 import draw_bbox_on_image_2, color_detection
 from helpers.Detection import Detection
-from helpers.ProcessedFrame import ProcessedFrame
+from helpers.LoggerConfig import get_logger
 from helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
+
+log = get_logger(__name__)
 
 def create_video_writer(video_cap, output_filename):
     # grab the width, height, and fps of the frames in the video stream.
@@ -41,8 +41,10 @@ def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_interm
     - confidence (in %) of detection in a given bbox
     - detected class id
     """
+    log.info("entering detection module")
     # run the YOLO model on the frame
     detections = mmodel(frame)[0]
+    log.info("finished detections, found %s objects in %s", len(detections.boxes.data.tolist))
     if show_intermediate_frame:
         img = Image.fromarray(detections.plot()[:, :, ::-1])
         img.show()
@@ -66,10 +68,12 @@ def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_interm
 
 
 if __name__ == '__main__':
+    log.info("entering main method")
+    log.info("loading model")
     # load the pre-trained YOLOv8n model
     model = YOLO(YOLO8_MODEL_PATH)
     #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
-
+    log.info("loaded model")
     """"# initialize the video capture object
     video_cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
     # initialize the video writer object

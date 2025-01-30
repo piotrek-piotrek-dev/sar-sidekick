@@ -1,4 +1,3 @@
-from asyncio.subprocess import Process
 from pathlib import Path
 
 import PIL
@@ -6,7 +5,6 @@ import cv2
 import numpy as np
 
 from PIL import Image
-from fontTools.ttx import process
 from ultralytics import YOLO
 from pprint import pprint
 from deep_sort_realtime.deepsort_tracker import DeepSort
@@ -14,7 +12,6 @@ from deep_sort_realtime.deepsort_tracker import DeepSort
 from color_detection_5 import draw_bbox_on_image_2, color_detection
 from helpers.Detection import Detection
 from helpers.LoggerConfig import get_logger
-from helpers.ProcessedFrame import ProcessedFrame
 from helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, PERSON_CLASS_ID
 
 
@@ -71,10 +68,12 @@ def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_interm
 
 
 if __name__ == '__main__':
+    log.info("entering main method")
+    log.info("loading model")
     # load the pre-trained YOLOv8n model
     model = YOLO(YOLO8_MODEL_PATH)
     #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
-
+    log.info("loaded model")
     """"# initialize the video capture object
     video_cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
     # initialize the video writer object

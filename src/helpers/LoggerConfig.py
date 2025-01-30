@@ -11,32 +11,27 @@ leg.error() ...
 etc...
 """
 
-import sys
 import  logging
-from datetime import datetime
 from logging import Logger
-
-from constants import LOG_TO_STD_OUT, LOG_FILE_PATH
-
-def get_date_time_as_str() -> str:
-    time = (str(datetime.now())
-            .replace(' ', '_')
-            .replace(':', '-')
-            .replace('.', '-'))
-    return time
+from helpers.constants import LOG_TO_STD_OUT, LOG_FILE_PATH
 
 def get_logger(module_name: str) -> Logger:
     rootLogger = logging.getLogger(module_name)
+    rootLogger.setLevel(logging.INFO)
 
     #logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
     logFormatter = logging.Formatter('%(asctime)s - [%(name)s] - [%(levelname)s] - %(message)s')
 
-    fileHandler = logging.FileHandler("{0}".format(LOG_FILE_PATH))
+    fileHandler = logging.FileHandler(LOG_FILE_PATH)
+    fileHandler.setLevel(logging.DEBUG)
     fileHandler.setFormatter(logFormatter)
     rootLogger.addHandler(fileHandler)
 
-    consoleHandler = logging.StreamHandler(sys.stdout if LOG_TO_STD_OUT else None)
+    consoleHandler = logging.StreamHandler()#sys.stdout if LOG_TO_STD_OUT else None)
+    consoleHandler.setLevel(logging.DEBUG)
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
+
+    rootLogger.info('created a logging config')
 
     return rootLogger

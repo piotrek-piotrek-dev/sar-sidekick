@@ -31,7 +31,7 @@ def create_video_writer(video_cap, output_filename):
 
     return writer
 
-#@measure_exec_time
+@measure_exec_time
 def detect(mmodel, frame: Path | str | PIL.Image.Image | np.ndarray, show_intermediate_frame=False) -> list:
     """
     :param mmodel: YOLO model to run inference. YOLO constructor
@@ -72,11 +72,11 @@ if __name__ == '__main__':
     log.info("entering main method")
     log.info("loading model")
 
-    #with MeasureExecTime() as yoloLoadingTime:
+    with MeasureExecTime() as yoloLoadingTime:
         # load the pre-trained YOLOv8n model
-    model = YOLO(YOLO8_MODEL_PATH)
+        model = YOLO(YOLO8_MODEL_PATH)
     #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
-    #log.info("loaded model in %s seconds", yoloLoadingTime.exec_time)
+    log.info("loaded model in %s seconds", yoloLoadingTime.exec_time)
 
     """"# initialize the video capture object
     video_cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
@@ -94,8 +94,8 @@ if __name__ == '__main__':
     """
 
     original_image = cv2.imread(INPUT_FRAME_FILE_PATH)
-    detections = detect(model, INPUT_FRAME_FILE_PATH)
-    log.info("found %s objects in %s", len(detections.boxes.data.tolist), detections_exec_time)
+    detections, detections_exec_time = detect(model, INPUT_FRAME_FILE_PATH)
+    log.info("found %s objects in %s seconds", len(detections), detections_exec_time)
 
     #bounding_boxes = [(det[0][0], det[0][1], det[0][2], det[0][3]) for det in detections]
     person_bounding_boxes: list[Detection]

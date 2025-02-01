@@ -22,121 +22,168 @@ from helpers.LoggerConfig import get_logger
 log = get_logger(__name__)
 
 # Dopacowanie do kolorow przedziałów, w HSV (wg neta OpenCV lepiej na tym dziala niz na klasycznym RGB)
+# COLOR_RANGES = {
+#     "czerwony": [
+#         # Standardowy czerwony
+#         {"lower": np.array([0, 150, 100], dtype=np.uint8), "upper": np.array([10, 255, 255], dtype=np.uint8)},
+#         # Jasny czerwony
+#         {"lower": np.array([0, 100, 150], dtype=np.uint8), "upper": np.array([10, 255, 255], dtype=np.uint8)},
+#         # Ciemny czerwony (bordowy)
+#         # {"lower": np.array([0, 150, 50], dtype=np.uint8), "upper": np.array([10, 255, 100], dtype=np.uint8)},
+#     ],
+#     "zielony": [
+#         # Standardowy zielony
+#         {"lower": np.array([35, 100, 100], dtype=np.uint8), "upper": np.array([85, 255, 255], dtype=np.uint8)},
+#         # Jasny zielony
+#         {"lower": np.array([35, 50, 150], dtype=np.uint8), "upper": np.array([85, 255, 255], dtype=np.uint8)},
+#         # Ciemny zielony
+#         {"lower": np.array([35, 100, 50], dtype=np.uint8), "upper": np.array([85, 255, 100], dtype=np.uint8)},
+#     ],
+#     "niebieski": [
+#         # Standardowy niebieski
+#         {"lower": np.array([100, 100, 100], dtype=np.uint8), "upper": np.array([130, 255, 255], dtype=np.uint8)},
+#         # Jasny niebieski
+#         {"lower": np.array([100, 50, 150], dtype=np.uint8), "upper": np.array([130, 255, 255], dtype=np.uint8)},
+#         # Ciemny niebieski
+#         {"lower": np.array([100, 100, 50], dtype=np.uint8), "upper": np.array([130, 255, 100], dtype=np.uint8)},
+#     ],
+#     "żółty": [
+#         # Standardowy żółty
+#         {"lower": np.array([20, 100, 100], dtype=np.uint8), "upper": np.array([30, 255, 255], dtype=np.uint8)},
+#         # Jasny żółty
+#         {"lower": np.array([20, 50, 150], dtype=np.uint8), "upper": np.array([30, 255, 255], dtype=np.uint8)},
+#         # Ciemny żółty (musztardowy)
+#         {"lower": np.array([20, 100, 50], dtype=np.uint8), "upper": np.array([30, 255, 100], dtype=np.uint8)},
+#     ],
+#     "pomarańczowy": [
+#         # Standardowy pomarańczowy
+#         {"lower": np.array([10, 100, 100], dtype=np.uint8), "upper": np.array([20, 255, 255], dtype=np.uint8)},
+#         # Jasny pomarańczowy
+#         {"lower": np.array([10, 50, 150], dtype=np.uint8), "upper": np.array([20, 255, 255], dtype=np.uint8)},
+#         # Ciemny pomarańczowy
+#         {"lower": np.array([10, 100, 50], dtype=np.uint8), "upper": np.array([20, 255, 100], dtype=np.uint8)},
+#     ],
+#     "różowy": [
+#         # Standardowy różowy
+#         {"lower": np.array([150, 100, 100], dtype=np.uint8), "upper": np.array([170, 255, 255], dtype=np.uint8)},
+#         # Jasny różowy
+#         {"lower": np.array([150, 50, 150], dtype=np.uint8), "upper": np.array([170, 255, 255], dtype=np.uint8)},
+#         # Ciemny różowy
+#         {"lower": np.array([150, 100, 50], dtype=np.uint8), "upper": np.array([170, 255, 100], dtype=np.uint8)},
+#     ],
+#     "fioletowy": [
+#         # Standardowy fioletowy
+#         {"lower": np.array([130, 100, 100], dtype=np.uint8), "upper": np.array([150, 255, 255], dtype=np.uint8)},
+#         # Jasny fioletowy
+#         {"lower": np.array([130, 50, 150], dtype=np.uint8), "upper": np.array([150, 255, 255], dtype=np.uint8)},
+#         # Ciemny fioletowy
+#         {"lower": np.array([130, 100, 50], dtype=np.uint8), "upper": np.array([150, 255, 100], dtype=np.uint8)},
+#     ],
+#     "brązowy": [
+#         # Standardowy brązowy
+#         {"lower": np.array([10, 100, 50], dtype=np.uint8), "upper": np.array([20, 255, 150], dtype=np.uint8)},
+#         # Jasny brązowy
+#         {"lower": np.array([10, 50, 100], dtype=np.uint8), "upper": np.array([20, 255, 150], dtype=np.uint8)},
+#         # Ciemny brązowy
+#         {"lower": np.array([10, 100, 30], dtype=np.uint8), "upper": np.array([20, 255, 80], dtype=np.uint8)},
+#     ],
+#     "kremowy": [
+#         # Standardowy kremowy (odcienie skóry)
+#         {"lower": np.array([10, 30, 150], dtype=np.uint8), "upper": np.array([25, 100, 255], dtype=np.uint8)},
+#         # Jasny kremowy
+#         {"lower": np.array([10, 20, 200], dtype=np.uint8), "upper": np.array([25, 80, 255], dtype=np.uint8)},
+#         # Ciemny kremowy
+#         {"lower": np.array([10, 40, 100], dtype=np.uint8), "upper": np.array([25, 120, 200], dtype=np.uint8)},
+#     ],
+#     "biały": [
+#         # Standardowy biały
+#         {"lower": np.array([0, 0, 200], dtype=np.uint8), "upper": np.array([180, 30, 255], dtype=np.uint8)},
+#     ],
+#     "czarny": [
+#         # Standardowy czarny
+#         {"lower": np.array([0, 0, 0], dtype=np.uint8), "upper": np.array([180, 255, 50], dtype=np.uint8)},
+#     ],
+#     "szary": [
+#         # Standardowy szary
+#         {"lower": np.array([0, 0, 50], dtype=np.uint8), "upper": np.array([180, 30, 200], dtype=np.uint8)},
+#     ],
+# }
 COLOR_RANGES = {
     "czerwony": [
         {"lower": np.array([0, 150, 100], dtype=np.uint8), "upper": np.array([10, 255, 255], dtype=np.uint8)},
         # Standardowy czerwony
         {"lower": np.array([170, 150, 100], dtype=np.uint8), "upper": np.array([180, 255, 255], dtype=np.uint8)},
-        {"lower": np.array([0, 150, 50], dtype=np.uint8), "upper": np.array([10, 255, 150], dtype=np.uint8)},
-        # Ciemny czerwony
-        {"lower": np.array([0, 150, 200], dtype=np.uint8), "upper": np.array([10, 255, 255], dtype=np.uint8)},
-        # Jasny czerwony
+        {"lower": np.array([0, 150, 50], dtype=np.uint8), "upper": np.array([10, 255, 100], dtype=np.uint8)},
     ],
     "zielony": [
-        {"lower": np.array([35, 70, 70], dtype=np.uint8), "upper": np.array([85, 255, 255], dtype=np.uint8)},
-        # Standardowy zielony
-        {"lower": np.array([35, 70, 50], dtype=np.uint8), "upper": np.array([85, 255, 150], dtype=np.uint8)},
-        # Ciemny zielony
-        {"lower": np.array([35, 70, 200], dtype=np.uint8), "upper": np.array([85, 255, 255], dtype=np.uint8)},
-        # Jasny zielony
+        {"lower": np.array([30, 40, 40], dtype=np.uint8), "upper": np.array([85, 255, 255], dtype=np.uint8)},
+        {"lower": np.array([35, 60, 70], dtype=np.uint8), "upper": np.array([75, 255, 255], dtype=np.uint8)},
     ],
     "niebieski": [
-        {"lower": np.array([100, 150, 70], dtype=np.uint8), "upper": np.array([130, 255, 255], dtype=np.uint8)},
-        # Standardowy niebieski
-        {"lower": np.array([100, 150, 50], dtype=np.uint8), "upper": np.array([130, 255, 150], dtype=np.uint8)},
-        # Ciemny niebieski
-        {"lower": np.array([100, 150, 200], dtype=np.uint8), "upper": np.array([130, 255, 255], dtype=np.uint8)},
-        # Jasny niebieski
+        {"lower": np.array([100, 100, 50], dtype=np.uint8), "upper": np.array([120, 255, 200], dtype=np.uint8)},
+        {"lower": np.array([110, 150, 70], dtype=np.uint8), "upper": np.array([130, 255, 180], dtype=np.uint8)},
+        {"lower": np.array([90, 100, 100], dtype=np.uint8), "upper": np.array([110, 255, 255], dtype=np.uint8)},
     ],
     "żółty": [
-        {"lower": np.array([20, 150, 150], dtype=np.uint8), "upper": np.array([30, 255, 255], dtype=np.uint8)},
-        # Standardowy żółty
-        {"lower": np.array([20, 150, 50], dtype=np.uint8), "upper": np.array([30, 255, 150], dtype=np.uint8)},
-        # Ciemny żółty
-        {"lower": np.array([25, 180, 240], dtype=np.uint8), "upper": np.array([30, 255, 255], dtype=np.uint8)},
-        # Neonowy żółty
-        {"lower": np.array([25, 50, 200], dtype=np.uint8), "upper": np.array([30, 100, 255], dtype=np.uint8)},
-        # Jasny pastelowy
-        {"lower": np.array([26, 50, 170], dtype=np.uint8), "upper": np.array([30, 140, 255], dtype=np.uint8)},
-        # Kanarkowy żółty i jego warianty (#f9ec6f, #fce955, itp.)
+        {"lower": np.array([15, 50, 50], dtype=np.uint8), "upper": np.array([30, 200, 200], dtype=np.uint8)},
+        {"lower": np.array([20, 80, 80], dtype=np.uint8), "upper": np.array([40, 255, 255], dtype=np.uint8)},
     ],
     "pomarańczowy": [
-        {"lower": np.array([10, 150, 150], dtype=np.uint8), "upper": np.array([20, 255, 255], dtype=np.uint8)},
-        # Standardowy pomarańczowy
-        {"lower": np.array([10, 150, 50], dtype=np.uint8), "upper": np.array([20, 255, 150], dtype=np.uint8)},
-        # Ciemny pomarańczowy
-        {"lower": np.array([10, 150, 200], dtype=np.uint8), "upper": np.array([20, 255, 255], dtype=np.uint8)},
-        # Jasny pomarańczowy
+        {"lower": np.array([10, 50, 50], dtype=np.uint8), "upper": np.array([25, 200, 200], dtype=np.uint8)},
+        {"lower": np.array([15, 80, 80], dtype=np.uint8), "upper": np.array([35, 255, 255], dtype=np.uint8)},
     ],
     "fioletowy": [
-        {"lower": np.array([130, 50, 50], dtype=np.uint8), "upper": np.array([155, 255, 255], dtype=np.uint8)},
-        # Standardowy fioletowy
-        {"lower": np.array([130, 50, 30], dtype=np.uint8), "upper": np.array([155, 255, 120], dtype=np.uint8)},
-        # Ciemny fioletowy
-        {"lower": np.array([130, 50, 200], dtype=np.uint8), "upper": np.array([155, 255, 255], dtype=np.uint8)},
-        # Jasny fioletowy
+        {"lower": np.array([125, 40, 50], dtype=np.uint8), "upper": np.array([155, 200, 200], dtype=np.uint8)},
+        {"lower": np.array([130, 70, 70], dtype=np.uint8), "upper": np.array([155, 255, 255], dtype=np.uint8)},
     ],
     "różowy": [
-        {"lower": np.array([160, 50, 70], dtype=np.uint8), "upper": np.array([175, 255, 255], dtype=np.uint8)},
-        # Standardowy różowy
-        {"lower": np.array([160, 50, 50], dtype=np.uint8), "upper": np.array([175, 255, 150], dtype=np.uint8)},
-        # Ciemny różowy
-        {"lower": np.array([160, 50, 200], dtype=np.uint8), "upper": np.array([175, 255, 255], dtype=np.uint8)},
-        # Jasny różowy
+        {"lower": np.array([150, 40, 50], dtype=np.uint8), "upper": np.array([170, 200, 200], dtype=np.uint8)},
+        {"lower": np.array([160, 70, 70], dtype=np.uint8), "upper": np.array([180, 255, 255], dtype=np.uint8)},
     ],
     "brązowy": [
-        {"lower": np.array([10, 50, 20], dtype=np.uint8), "upper": np.array([30, 200, 150], dtype=np.uint8)},
-        # Standardowy brązowy
-        {"lower": np.array([10, 50, 10], dtype=np.uint8), "upper": np.array([30, 150, 100], dtype=np.uint8)},
-        # Ciemny brązowy
-        {"lower": np.array([10, 50, 160], dtype=np.uint8), "upper": np.array([30, 255, 255], dtype=np.uint8)},
-        # Jasny brązowy
+        {"lower": np.array([0, 20, 10], dtype=np.uint8), "upper": np.array([20, 150, 80], dtype=np.uint8)},
+        {"lower": np.array([5, 30, 10], dtype=np.uint8), "upper": np.array([25, 150, 80], dtype=np.uint8)},
+        {"lower": np.array([10, 40, 40], dtype=np.uint8), "upper": np.array([30, 200, 150], dtype=np.uint8)},
+        {"lower": np.array([15, 50, 70], dtype=np.uint8), "upper": np.array([40, 255, 200], dtype=np.uint8)},
+    ],
+    "piaskowy": [
+        {"lower": np.array([20, 30, 120], dtype=np.uint8), "upper": np.array([30, 80, 180], dtype=np.uint8)},
+        {"lower": np.array([25, 60, 150], dtype=np.uint8), "upper": np.array([40, 120, 200], dtype=np.uint8)},
     ],
     "biały": [
-        {"lower": np.array([0, 0, 220], dtype=np.uint8), "upper": np.array([180, 30, 255], dtype=np.uint8)},
-        # Standardowy biały
-        {"lower": np.array([0, 0, 200], dtype=np.uint8), "upper": np.array([180, 30, 220], dtype=np.uint8)},
-        # Ciemny biały
-        {"lower": np.array([0, 0, 240], dtype=np.uint8), "upper": np.array([180, 30, 255], dtype=np.uint8)},
-        # Jasny biały
+        {"lower": np.array([0, 0, 220], dtype=np.uint8), "upper": np.array([180, 30, 255], dtype=np.uint8)},  # Standardowy biały
+        {"lower": np.array([0, 0, 200], dtype=np.uint8), "upper": np.array([180, 30, 220], dtype=np.uint8)},  # Ciemny biały
+        {"lower": np.array([0, 0, 240], dtype=np.uint8), "upper": np.array([180, 30, 255], dtype=np.uint8)},  # Jasny biały
     ],
     "czarny": [
-        {"lower": np.array([0, 0, 0], dtype=np.uint8), "upper": np.array([180, 255, 50], dtype=np.uint8)},
-        # Standardowy czarny
-        {"lower": np.array([0, 0, 0], dtype=np.uint8), "upper": np.array([180, 255, 25], dtype=np.uint8)},
-        # Ciemny czarny
-        {"lower": np.array([0, 0, 50], dtype=np.uint8), "upper": np.array([180, 255, 80], dtype=np.uint8)},
-        # Jasny czarny
+        {"lower": np.array([0, 0, 0], dtype=np.uint8), "upper": np.array([180, 255, 50], dtype=np.uint8)},  # Standardowy czarny
+        {"lower": np.array([0, 0, 0], dtype=np.uint8), "upper": np.array([180, 255, 25], dtype=np.uint8)},  # Ciemny czarny
+        {"lower": np.array([0, 0, 50], dtype=np.uint8), "upper": np.array([180, 255, 80], dtype=np.uint8)},  # Jasny czarny
     ],
     "szary": [
-        {"lower": np.array([0, 0, 50], dtype=np.uint8), "upper": np.array([180, 20, 200], dtype=np.uint8)},
-        # Standardowy szary
-        {"lower": np.array([0, 0, 30], dtype=np.uint8), "upper": np.array([180, 20, 150], dtype=np.uint8)},
-        # Ciemny szary
-        {"lower": np.array([0, 0, 200], dtype=np.uint8), "upper": np.array([180, 20, 255], dtype=np.uint8)},
-        # Jasny szary
+        {"lower": np.array([0, 0, 50], dtype=np.uint8), "upper": np.array([180, 20, 200], dtype=np.uint8)},  # Standardowy szary
+        {"lower": np.array([0, 0, 30], dtype=np.uint8), "upper": np.array([180, 20, 150], dtype=np.uint8)},  # Ciemny szary
+        {"lower": np.array([0, 0, 200], dtype=np.uint8), "upper": np.array([180, 20, 255], dtype=np.uint8)},  # Jasny szary
+    ],
+    "skóra": [
+        {"lower": np.array([0, 30, 150], dtype=np.uint8), "upper": np.array([20, 150, 230], dtype=np.uint8)},
+        {"lower": np.array([0, 20, 120], dtype=np.uint8), "upper": np.array([25, 100, 200], dtype=np.uint8)},
+    ],
+    "beżowy": [
+        {"lower": np.array([15, 30, 140], dtype=np.uint8), "upper": np.array([30, 80, 190], dtype=np.uint8)},
+        {"lower": np.array([20, 60, 160], dtype=np.uint8), "upper": np.array([40, 120, 210], dtype=np.uint8)},
     ],
     "turkusowy": [
-        {"lower": np.array([80, 150, 100], dtype=np.uint8), "upper": np.array([100, 255, 255], dtype=np.uint8)},
-        # Standardowy turkusowy
-        {"lower": np.array([80, 150, 50], dtype=np.uint8), "upper": np.array([100, 255, 150], dtype=np.uint8)},
-        # Ciemny turkusowy
-        {"lower": np.array([80, 150, 200], dtype=np.uint8), "upper": np.array([100, 255, 255], dtype=np.uint8)},
-        # Jasny turkusowy
+        {"lower": np.array([80, 100, 100], dtype=np.uint8), "upper": np.array([100, 255, 255], dtype=np.uint8)},
     ],
     "błękit": [
-        {"lower": np.array([90, 150, 100], dtype=np.uint8), "upper": np.array([110, 255, 255], dtype=np.uint8)},
-        # Standardowy błękit
-        {"lower": np.array([90, 150, 50], dtype=np.uint8), "upper": np.array([110, 255, 150], dtype=np.uint8)},
-        # Ciemny błękit
-        {"lower": np.array([90, 150, 200], dtype=np.uint8), "upper": np.array([110, 255, 255], dtype=np.uint8)},
-        # Jasny błękit
+        {"lower": np.array([90, 100, 100], dtype=np.uint8), "upper": np.array([110, 255, 255], dtype=np.uint8)},
     ],
 }
 
 
 # ==================================================================================================================
-# Sekcja 
+# Sekcja
 # ==================================================================================================================
 
 def draw_bboxes_on_image(image, matching_bboxes):
@@ -188,7 +235,7 @@ def draw_bbox_on_image_2(image: np.ndarray, matching_bbox: Detection) -> np.ndar
 
 
 # ==================================================================================================================
-# Sekcja 
+# Sekcja
 # ==================================================================================================================
 def all_images_threading(images_data, color_names, min_color_perc):
     result_queue = queue.Queue()
@@ -212,7 +259,7 @@ def all_images_threading(images_data, color_names, min_color_perc):
 
 
 # ==================================================================================================================
-# Sekcja 
+# Sekcja
 # ==================================================================================================================
 
 
@@ -254,6 +301,13 @@ def process_images_in_folder(every_image, color_names, min_color_perc, result_qu
 
                 cleaned_image = cv2.bitwise_and(cropped_image, cropped_image, mask=mask_resized)
 
+                # plt.figure(figsize=(10, 10))
+                # plt.imshow(cv2.cvtColor(cleaned_image, cv2.COLOR_BGR2RGB))
+                # plt.title(f"Segmentacja: {image_name} (BBox: {x1}, {y1}, {x2}, {y2})")
+                # plt.axis('off')
+                # plt.show()
+
+
                 all_color_ranges = {
                     color_name: color_by_name(color_name)
                     for color_name in color_names if color_by_name(color_name)
@@ -282,7 +336,7 @@ def process_images_in_folder(every_image, color_names, min_color_perc, result_qu
 
 
 # ==================================================================================================================
-# Sekcja 2: 
+# Sekcja 2:
 # ==================================================================================================================
 def calculate_color_percentage(image, color_ranges, min_color_perc):
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)  ## skoro ranges są w HSV to musimy zamienic image tez w to
@@ -306,6 +360,13 @@ def calculate_color_percentage(image, color_ranges, min_color_perc):
             colored_area = cv2.bitwise_and(result_image, result_image, mask=mask)  ## Obrazek z tylko z pixelami koloru
             result_image = cv2.add(result_image, colored_area)
 
+            # plt.figure(figsize=(10, 10))
+            # plt.imshow(cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB))
+            # plt.axis('off')
+            # plt.show()
+
+
+
         color_percentage = (color_pixels / non_black_pixels) * 100
         color_info[color_name] = {
             "percentage": color_percentage,
@@ -321,7 +382,7 @@ def calculate_color_percentage(image, color_ranges, min_color_perc):
 
 
 # ==================================================================================================================
-# Sekcja 3: 
+# Sekcja 3:
 # ==================================================================================================================
 def color_by_name(color_name):
     color_name = color_name.lower()
@@ -333,7 +394,7 @@ def color_by_name(color_name):
 
 
 # ==================================================================================================================
-# Sekcja 4: 
+# Sekcja 4:
 # ==================================================================================================================
 
 ## INPUTY image POŹNIEJ OUT

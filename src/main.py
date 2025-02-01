@@ -16,7 +16,8 @@ from helpers.Detection import Detection
 from helpers.LoggerConfig import get_logger
 from helpers.TimeMeasurements import measure_exec_time, MeasureExecTime
 from helpers.constants import DEEP_SORT_MAX_AGE, YOLO8_MODEL_PATH, CONFIDENCE_THRESHOLD, INPUT_FRAME_FILE_PATH, \
-    PERSON_CLASS_ID, INPUT_VIDEO_FILE, OUTPUT_FILE_NAME, PRESENTATION_MODE, BETTER_GRAB_YOURSELF_A_COFFE
+    PERSON_CLASS_ID, INPUT_VIDEO_FILE, OUTPUT_FILE_NAME, PRESENTATION_MODE, BETTER_GRAB_YOURSELF_A_COFFE, \
+    DETECTION_MODEL_PATH, DETECTION_MODEL_NAME
 
 log = get_logger(__name__)
 
@@ -102,9 +103,9 @@ if __name__ == '__main__':
 
     with MeasureExecTime() as yoloLoadingTime:
         # load the pre-trained YOLOv8n model
-        model = YOLO(YOLO8_MODEL_PATH)
+        model = YOLO(DETECTION_MODEL_PATH)
     #tracker = DeepSort(max_age=DEEP_SORT_MAX_AGE)
-    log.info("loaded model in %s ms", yoloLoadingTime.exec_time_ms)
+    log.info("loaded model %s in %s ms",DETECTION_MODEL_NAME, yoloLoadingTime.exec_time_ms)
 
     original_image = cv2.imread(INPUT_FRAME_FILE_PATH)
     detections, detections_exec_time = detect(model, INPUT_FRAME_FILE_PATH, show_intermediate_frame=PRESENTATION_MODE)

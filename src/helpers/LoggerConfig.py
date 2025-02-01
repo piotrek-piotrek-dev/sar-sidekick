@@ -13,25 +13,27 @@ etc...
 
 import  logging
 from logging import Logger
-from helpers.constants import LOG_TO_STD_OUT, LOG_FILE_PATH
+from helpers.constants import LOG_TO_STD_OUT, LOG_FILE_PATH, LOG_LEVEL
+
 
 def get_logger(module_name: str) -> Logger:
     rootLogger = logging.getLogger(module_name)
-    rootLogger.setLevel(logging.INFO)
+    rootLogger.setLevel(LOG_LEVEL)
 
     #logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
     logFormatter = logging.Formatter('%(asctime)s - [%(name)s] - [%(levelname)s] - %(message)s')
 
     fileHandler = logging.FileHandler(LOG_FILE_PATH)
-    fileHandler.setLevel(logging.DEBUG)
+    fileHandler.setLevel(LOG_LEVEL)
     fileHandler.setFormatter(logFormatter)
     rootLogger.addHandler(fileHandler)
 
     consoleHandler = logging.StreamHandler()#sys.stdout if LOG_TO_STD_OUT else None)
-    consoleHandler.setLevel(logging.DEBUG)
+    consoleHandler.setLevel(LOG_LEVEL)
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
 
     rootLogger.info('created a logging config')
+    print(f"Logger created with threshold: {LOG_LEVEL}, logfile will be placed in {LOG_FILE_PATH}")
 
     return rootLogger

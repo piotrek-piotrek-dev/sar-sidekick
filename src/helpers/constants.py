@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from pathlib import Path
 
@@ -6,6 +7,9 @@ PROJECT_ROOT_DIR = [p for p in Path(__file__).parents if p.parts[-1]==PROJECT_NA
 RESOURCES_ROOT_DIR = PROJECT_ROOT_DIR.joinpath('resources')
 MODELS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('models')
 LOGS_ROOT_DIR = RESOURCES_ROOT_DIR.joinpath('logs')
+LOG_LEVEL = logging.INFO
+PRESENTATION_MODE = True
+BETTER_GRAB_YOURSELF_A_COFFE = False
 
 def get_date_time_as_str() -> str:
     time = (str(datetime.now())

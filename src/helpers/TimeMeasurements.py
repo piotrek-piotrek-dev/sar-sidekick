@@ -37,7 +37,7 @@ def measure_exec_time(func):
         result = func(*args, **kwargs)
         # print('func:%r args:[%r, %r] took: %2.4f sec' % \
         #       (func.__name__, args, kwargs, time_end - time_start))
-        return result, perf_counter_ns() - time_start
+        return result, (perf_counter_ns() - time_start) / 1000000
     return wrap
 
 
@@ -48,5 +48,6 @@ class MeasureExecTime:
 
     def __exit__(self, type, value, traceback):
         self.exec_time = perf_counter_ns() - self.start
+        self.exec_time_ms = self.exec_time / 1000000
         # self.readout = f'Time: {self.time:.3f} seconds'
         # print(self.readout)

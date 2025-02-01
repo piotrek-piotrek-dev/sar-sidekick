@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import PIL
 from jupyter_core.version import parts
 from ultralytics import YOLO
 import cv2
@@ -13,7 +14,9 @@ import matplotlib.pyplot as plt
 
 from helpers.Detection import Detection
 from helpers.ProcessedFrame import ProcessedFrame
+from helpers.TimeMeasurements import measure_exec_time
 from helpers.constants import YOLO11_MODEL_PATH
+from PIL import Image
 
 # Dopacowanie do kolorow przedziałów, w HSV (wg neta OpenCV lepiej na tym dziala niz na klasycznym RGB)
 COLOR_RANGES = {
@@ -155,7 +158,7 @@ def draw_bboxes_on_image(image, matching_bboxes):
 
     return image
 
-
+@measure_exec_time
 def draw_bbox_on_image_2(image: np.ndarray, matching_bbox: Detection) -> np.ndarray:
     x1 = matching_bbox.x
     y1 = matching_bbox.y
@@ -173,7 +176,7 @@ def draw_bbox_on_image_2(image: np.ndarray, matching_bbox: Detection) -> np.ndar
                 text,
                 (x1, y1 - 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
+                0.9,
                 (0, 255, 0),
                 2,
                 cv2.LINE_AA)
@@ -392,8 +395,10 @@ def color_detection(images_data):
         image_with_bboxes = result["image_with_bboxes"]
 
         # Wyświetl obrazek
-        plt.figure(figsize=(10, 10))
-        plt.imshow(cv2.cvtColor(image_with_bboxes, cv2.COLOR_BGR2RGB))
-        plt.title(f"Obrazek: {result['image_name']}")
-        plt.axis('off')
-        plt.show()
+        # plt.figure(figsize=(10, 10))
+        # plt.imshow(cv2.cvtColor(image_with_bboxes, cv2.COLOR_BGR2RGB))
+        # plt.title(f"Obrazek: {result['image_name']}")
+        # plt.axis('off')
+        # plt.show()
+        processed_image = Image.fromarray(image_with_bboxes)
+        processed_image.show()

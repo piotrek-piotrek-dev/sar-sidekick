@@ -14,9 +14,12 @@ import matplotlib.pyplot as plt
 
 from helpers.Detection import Detection
 from helpers.ProcessedFrame import ProcessedFrame
-from helpers.TimeMeasurements import measure_exec_time
+from helpers.TimeMeasurements import measure_exec_time, MeasureExecTime
 from helpers.constants import YOLO11_MODEL_PATH
 from PIL import Image
+from helpers.LoggerConfig import get_logger
+
+log = get_logger(__name__)
 
 # Dopacowanie do kolorow przedziałów, w HSV (wg neta OpenCV lepiej na tym dziala niz na klasycznym RGB)
 COLOR_RANGES = {
@@ -388,8 +391,10 @@ def color_detection(images_data):
                 break
 
     # Wywołanie głównej funkcji przetwarzającej
-    matching_images = all_images_threading(images_data, color_names, min_color_perc)
+    with MeasureExecTime() as color_detection_time:
+        matching_images = all_images_threading(images_data, color_names, min_color_perc)
     # print("Obrazy spełniające kryteria:", matching_images)
+    log.info("Color detection processing time: %s ms", color_detection_time.exec_time_ms)
 
     for result in matching_images:
         image_with_bboxes = result["image_with_bboxes"]
@@ -400,5 +405,5 @@ def color_detection(images_data):
         # plt.title(f"Obrazek: {result['image_name']}")
         # plt.axis('off')
         # plt.show()
-        processed_image = Image.fromarray(image_with_bboxes)
+        processed_image = Image.fromarray(cv2.cvtColor(image_with_bboxes, cv2.COLOR_BGR2RGB))
         processed_image.show()

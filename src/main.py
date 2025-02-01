@@ -152,4 +152,4 @@ if __name__ == '__main__':
     log.info("Entering color detection")
     with MeasureExecTime() as color_detection_time:
         color_detection([processed_frame])
-    log.info("Total color detection time: %s ms", color_detection_time.exec_time_ms)
+    log.info("Total color detection processing time: %s ms", color_detection_time.exec_time_ms)
